@@ -17,6 +17,12 @@ def code_to_input(curr):
     prev_input = "A"
     result = []
 
+    if(end_pos[1] == [0] and curr[0] == 3 and end_pos[0] < curr_pos[0]):
+        delta = curr_pos[0] - end_pos[0]
+        add_to_result(prev_input, delta, "^", curr[2], result)
+        prev_input = "^"
+        curr_pos = (end_pos[0], curr_pos[1])
+
     if(end_pos[1] < curr_pos[1]):
         delta = curr_pos[1] - end_pos[1]
         add_to_result(prev_input, delta, "<", curr[2], result)
@@ -68,6 +74,12 @@ def input_to_more_input(curr):
         add_to_result(prev_input, delta, "<", curr[2], result)
         prev_input = "<"
         curr_pos = (curr_pos[0], end_pos[1])
+    
+    if(end_pos[0] == 0 and curr[1] == 0 and end_pos[1] > curr_pos[1]):
+        delta = end_pos[1] - curr_pos[1]
+        add_to_result(prev_input, delta, ">", curr[2], result)
+        prev_input = ">"
+        curr_pos = (curr_pos[0], end_pos[1])
 
     if(end_pos[0] < curr_pos[0]):
         delta = curr_pos[0] - end_pos[0]
@@ -76,7 +88,7 @@ def input_to_more_input(curr):
         curr_pos = (end_pos[0], curr_pos[1])
         
     if(end_pos[0] > curr_pos[0]):
-        delta = end_pos[0]  -curr_pos[0]
+        delta = end_pos[0] - curr_pos[0]
         add_to_result(prev_input, delta, "v", curr[2], result)
         prev_input = "v"
         curr_pos = (end_pos[0], curr_pos[1])
@@ -90,7 +102,8 @@ def input_to_more_input(curr):
     result.append((prev_input, "A", curr[2] - 1))
     return result
 
-NB_ROBOTS = 25
+
+NB_ROBOTS = 5
 CHARACTERS = ["A",">","<","v","^"]
 
 codes = get_codes()
@@ -116,14 +129,14 @@ for code in codes:
     operations.append(("A", code[0], NB_ROBOTS))
     for i in range(1,len(code)):
         operations.append((code[i-1], code[i], NB_ROBOTS))
-    total_cost = 0
+    cost = 0
 
     for op in operations:
         lower_operations = code_to_input(op)
         for lower in lower_operations:
-            total_cost += unique_cost[lower]
+            cost += unique_cost[lower]
         
-    print(total_cost, code)
-    total += total_cost * int(code[0:3])
+    print(cost, code)
+    total += cost * int(code[0:3])
 
 print(total)
